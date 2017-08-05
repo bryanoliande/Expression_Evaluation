@@ -1,0 +1,62 @@
+Comment !
+Program:   Expression_Evaluation.asm
+ Student:     Bryan Oliande
+ Date Due:        5/21/15
+ Class:       CSCI 241
+ Instructor:  Mr. Ding
+Description: 
+	Write a program that evaluates the arithmetic expression: ((A + B) / C) * ((D - A) + E).
+!
+
+INCLUDE Irvine32.inc
+INCLUDE Macros.inc
+
+mReadFloat MACRO prompt, floatVal
+	mWriteString OFFSET prompt
+	call ReadFloat
+	fstp floatVal
+	call crlf
+	
+ENDM
+
+.data
+str1 BYTE "This program evaluates ((A + B) / C) * ((D - A) + E)",0
+result BYTE "Your Result is ",0
+PromptA BYTE "Please enter A: ",0
+PromptB BYTE "Please enter B: ",0
+PromptC BYTE "Please enter C: ",0
+PromptD BYTE "Please enter D: ",0
+PromptE BYTE "Please enter E: ",0
+Av REAL8 ?
+Bv REAL8 ?
+Cv REAL8 ?
+Dv REAL8 ?
+Ev REAL8 ?
+
+
+.code
+main PROC
+	mWriteString OFFSET str1
+	call crlf
+	mReadFloat PromptA, Av
+	mReadFloat PromptB, Bv
+	mReadFloat PromptC, Cv
+	mReadFloat PromptD, Dv
+	mReadFloat PromptE, Ev
+
+
+	fld Bv	;load B
+	fadd Av ; ST(0) = (A+B)
+	fdiv Cv ; ST(0) = (A+B)/C
+	fld Dv	;ST(0) = D, ST(1) = (A+B)/C
+	fsub Av	;ST(0) = D-A,	ST(1) = (A+B)/C
+	fadd Ev	;ST(0) = (D-A) + E,	ST(1) = (A+B)/C
+	fmul	;Multiply ((A + B) / C) * ((D - A) + E)
+
+	mWriteString OFFSET result
+	call WriteFloat
+	call crlf
+	call waitMsg
+	exit
+main ENDP
+END main
